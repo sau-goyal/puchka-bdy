@@ -15,9 +15,12 @@ interface GiftRevealProps {
     revealed: boolean
   }>
   onGiftRevealed: (index: number) => void
+  audioRef: React.RefObject<HTMLAudioElement | null>
+  isPlaying: boolean
+  setIsPlaying: (isPlaying: boolean) => void
 }
 
-export function GiftReveal({ gifts, onGiftRevealed }: GiftRevealProps) {
+export function GiftReveal({ gifts, onGiftRevealed, audioRef, isPlaying, setIsPlaying }: GiftRevealProps) {
   const [selectedGift, setSelectedGift] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [modalImageSrc, setModalImageSrc] = useState("")
@@ -44,6 +47,13 @@ export function GiftReveal({ gifts, onGiftRevealed }: GiftRevealProps) {
 
   const playVoiceNote = (index: number, voiceNoteSrc: string) => {
     // Stop any currently playing audio
+    if (isPlaying) {
+      audioRef.current?.pause()
+      setIsPlaying(false)
+    }else {
+      audioRef.current?.play() 
+      setIsPlaying(true)
+    }
     if (playingVoice !== null && audioElements[playingVoice]) {
       audioElements[playingVoice].pause()
       audioElements[playingVoice].currentTime = 0
@@ -65,6 +75,7 @@ export function GiftReveal({ gifts, onGiftRevealed }: GiftRevealProps) {
       audio.play()
     } else {
       // Play existing audio
+      
       audioElements[index].play()
     }
 
@@ -185,7 +196,7 @@ export function GiftReveal({ gifts, onGiftRevealed }: GiftRevealProps) {
                             ) : (
                               <>
                                 <Play className="h-4 w-4" />
-                                Play Voice Note
+                                Tuku ki Aawaj Sunlo 😗
                               </>
                             )}
                             <Volume2 className="h-4 w-4" />
