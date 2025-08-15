@@ -1,29 +1,30 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Heart, Volume2, VolumeX, Gift } from "lucide-react"
-import { BirthdayCake } from "@/components/birthday-cake"
-import { GiftReveal } from "@/components/gift-reveal"
-import config from "@/lib/birthday-config"
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Heart, Volume2, VolumeX, Gift } from "lucide-react";
+import { BirthdayCake } from "@/components/birthday-cake";
+import { GiftReveal } from "@/components/gift-reveal";
+import config from "@/lib/birthday-config";
 
 export default function BirthdayCelebration() {
-  const [currentPhase, setCurrentPhase] = useState(0)
-  const [showParticles, setShowParticles] = useState(true)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [clickCount, setClickCount] = useState(0)
-  const [currentGif, setCurrentGif] = useState("")
+  const [currentPhase, setCurrentPhase] = useState(0);
+  const [showParticles, setShowParticles] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [clickCount, setClickCount] = useState(0);
+  const [currentGif, setCurrentGif] = useState("");
   const [gifts, setGifts] = useState([
     {
       name: "Virtual Hug",
       description: "The biggest, warmest hug from me to you! 🤗",
-      image: "/placeholder.svg?height=150&width=150",
+      image: "/hug.jpg?height=150&width=150",
       revealed: false,
     },
     {
       name: "Love Letter",
-      description: "A heartfelt letter expressing all my love for you 💌 (Click the image to read it!)",
+      description:
+        "A heartfelt letter expressing all my love for you 💌 (Click the image to read it!)",
       image: "/placeholder.svg?height=150&width=150",
       modalImage: "/placeholder.svg?height=600&width=800",
       revealed: false,
@@ -32,36 +33,46 @@ export default function BirthdayCelebration() {
       name: "ab tuki bolega",
       description: "A special voice note just for you! 🎵 (Click to play)",
       image: "/placeholder.svg?height=150&width=150",
-      voiceNote: "/placeholder.mp3?query=romantic voice message",
+      voiceNote: "/tuku.mp3?query=romantic voice message",
       revealed: false,
     },
-  ])
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const audioRef = useRef<HTMLAudioElement>(null)
+  ]);
+  const [hasStarted, setHasStarted] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const startExperience = () => {
+    setHasStarted(true);
+  
+    audioRef.current?.play();
+      
+    // setIsPlaying(!isPlaying);
+
+  };
 
   // Initialize GIF
   useEffect(() => {
-    setCurrentGif(config.birthdayGifs[0] || "")
-  }, [])
+    setCurrentGif(config.birthdayGifs[0] || "");
+  }, []);
 
   // Initialize particle animation (balloons and confetti)
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
 
-    resizeCanvas()
-    window.addEventListener("resize", resizeCanvas)
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
-    const particles: any[] = []
-    const particleCount = config.settings.particleCount
+    const particles: any[] = [];
+    const particleCount = config.settings.particleCount;
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
@@ -70,20 +81,23 @@ export default function BirthdayCelebration() {
         vx: (Math.random() - 0.5) * 2,
         vy: (Math.random() - 0.5) * 2,
         size: Math.random() * 4 + 2,
-        color: config.settings.balloonColors[Math.floor(Math.random() * config.settings.balloonColors.length)],
+        color:
+          config.settings.balloonColors[
+            Math.floor(Math.random() * config.settings.balloonColors.length)
+          ],
         life: Math.random() * 100 + 50,
         type: Math.random() > 0.5 ? "balloon" : "confetti",
-      })
+      });
     }
 
     const animate = () => {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((particle, index) => {
-        particle.x += particle.vx
-        particle.y += particle.vy
-        particle.life--
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.life--;
 
         if (
           particle.life <= 0 ||
@@ -98,84 +112,90 @@ export default function BirthdayCelebration() {
             vx: (Math.random() - 0.5) * 2,
             vy: (Math.random() - 0.5) * 2,
             size: Math.random() * 4 + 2,
-            color: config.settings.balloonColors[Math.floor(Math.random() * config.settings.balloonColors.length)],
+            color:
+              config.settings.balloonColors[
+                Math.floor(Math.random() * config.settings.balloonColors.length)
+              ],
             life: Math.random() * 100 + 50,
             type: Math.random() > 0.5 ? "balloon" : "confetti",
-          }
+          };
         }
 
-        ctx.fillStyle = particle.color
+        ctx.fillStyle = particle.color;
         if (particle.type === "balloon") {
-          ctx.beginPath()
-          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-          ctx.fill()
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+          ctx.fill();
         } else {
-          ctx.fillRect(particle.x, particle.y, particle.size, particle.size)
+          ctx.fillRect(particle.x, particle.y, particle.size, particle.size);
         }
-      })
+      });
 
       if (showParticles) {
-        requestAnimationFrame(animate)
+        requestAnimationFrame(animate);
       }
-    }
+    };
 
-    animate()
+    animate();
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas)
-    }
-  }, [showParticles])
+      window.removeEventListener("resize", resizeCanvas);
+    };
+  }, [showParticles]);
 
   const handleNextPhase = () => {
     if (currentPhase < config.phases.length - 1) {
-      setCurrentPhase((prev) => prev + 1)
+      setCurrentPhase((prev) => prev + 1);
       if (currentPhase === 0) {
-        setShowParticles(false)
+        setShowParticles(false);
       }
       // Create celebration effect
-      createFloatingBalloons()
-      createEmojiRain() // Add this line
+      createFloatingBalloons();
+      createEmojiRain(); // Add this line
     }
-  }
+  };
 
   const handleCelebrationClick = () => {
-    setClickCount((prev) => prev + 1)
-    createFloatingBalloons()
-    createEmojiRain() // Add this new function call
+    setClickCount((prev) => prev + 1);
+    createFloatingBalloons();
+    createEmojiRain(); // Add this new function call
 
     // Change GIF randomly
     if (config.birthdayGifs.length > 0) {
-      const randomGif = config.birthdayGifs[Math.floor(Math.random() * config.birthdayGifs.length)]
-      setCurrentGif(randomGif)
+      const randomGif =
+        config.birthdayGifs[
+          Math.floor(Math.random() * config.birthdayGifs.length)
+        ];
+      setCurrentGif(randomGif);
     }
-  }
+  };
 
   const createFloatingBalloons = () => {
-    const balloons = ["🎈", "🎂", "🎉", "💖", "🌟"]
+    const balloons = ["🎈", "🎂", "🎉", "💖", "🌟"];
 
     for (let i = 0; i < 5; i++) {
-      const balloon = document.createElement("div")
-      balloon.innerHTML = balloons[Math.floor(Math.random() * balloons.length)]
-      balloon.style.position = "fixed"
-      balloon.style.left = Math.random() * window.innerWidth + "px"
-      balloon.style.top = window.innerHeight + "px"
-      balloon.style.fontSize = "2rem"
-      balloon.style.pointerEvents = "none"
-      balloon.style.zIndex = "1000"
-      balloon.style.transition = "all 4s ease-out"
+      const balloon = document.createElement("div");
+      balloon.innerHTML = balloons[Math.floor(Math.random() * balloons.length)];
+      balloon.style.position = "fixed";
+      balloon.style.left = Math.random() * window.innerWidth + "px";
+      balloon.style.top = window.innerHeight + "px";
+      balloon.style.fontSize = "2rem";
+      balloon.style.pointerEvents = "none";
+      balloon.style.zIndex = "1000";
+      balloon.style.transition = "all 4s ease-out";
 
-      document.body.appendChild(balloon)
-
-      setTimeout(() => {
-        balloon.style.top = "-100px"
-        balloon.style.opacity = "0"
-      }, 100)
+      document.body.appendChild(balloon);
 
       setTimeout(() => {
-        document.body.removeChild(balloon)
-      }, 4000)
+        balloon.style.top = "-100px";
+        balloon.style.opacity = "0";
+      }, 100);
+
+      setTimeout(() => {
+        document.body.removeChild(balloon);
+      }, 4000);
     }
-  }
+  };
 
   const createEmojiRain = () => {
     const birthdayEmojis = [
@@ -209,117 +229,155 @@ export default function BirthdayCelebration() {
       "🧁",
       "🍭",
       "🎪",
-    ]
+    ];
 
-    const happyBirthdayText = ["H", "A", "P", "P", "Y", " ", "B", "I", "R", "T", "H", "D", "A", "Y"]
+    const happyBirthdayText = [
+      "H",
+      "A",
+      "P",
+      "P",
+      "Y",
+      " ",
+      "B",
+      "I",
+      "R",
+      "T",
+      "H",
+      "D",
+      "A",
+      "Y",
+    ];
 
     // Create emoji rain
     for (let i = 0; i < 25; i++) {
-      const emoji = document.createElement("div")
-      const randomEmoji = birthdayEmojis[Math.floor(Math.random() * birthdayEmojis.length)]
-      emoji.innerHTML = randomEmoji
-      emoji.style.position = "fixed"
-      emoji.style.left = Math.random() * (window.innerWidth - 50) + "px"
-      emoji.style.top = "-50px"
-      emoji.style.fontSize = "2rem"
-      emoji.style.pointerEvents = "none"
-      emoji.style.zIndex = "1000"
-      emoji.style.transition = `all ${3 + Math.random() * 2}s ease-out`
-      emoji.style.transform = `rotate(${Math.random() * 360}deg)`
+      const emoji = document.createElement("div");
+      const randomEmoji =
+        birthdayEmojis[Math.floor(Math.random() * birthdayEmojis.length)];
+      emoji.innerHTML = randomEmoji;
+      emoji.style.position = "fixed";
+      emoji.style.left = Math.random() * (window.innerWidth - 50) + "px";
+      emoji.style.top = "-50px";
+      emoji.style.fontSize = "2rem";
+      emoji.style.pointerEvents = "none";
+      emoji.style.zIndex = "1000";
+      emoji.style.transition = `all ${3 + Math.random() * 2}s ease-out`;
+      emoji.style.transform = `rotate(${Math.random() * 360}deg)`;
 
-      document.body.appendChild(emoji)
-
-      setTimeout(() => {
-        emoji.style.top = window.innerHeight + 50 + "px"
-        emoji.style.transform = `rotate(${Math.random() * 720}deg) scale(${0.5 + Math.random() * 0.5})`
-      }, Math.random() * 500)
+      document.body.appendChild(emoji);
 
       setTimeout(() => {
-        document.body.removeChild(emoji)
-      }, 5500)
+        emoji.style.top = window.innerHeight + 50 + "px";
+        emoji.style.transform = `rotate(${Math.random() * 720}deg) scale(${
+          0.5 + Math.random() * 0.5
+        })`;
+      }, Math.random() * 500);
+
+      setTimeout(() => {
+        document.body.removeChild(emoji);
+      }, 5500);
     }
 
     // Create "HAPPY BIRTHDAY" text rain with spacing
     happyBirthdayText.forEach((letter, index) => {
-      if (letter === " ") return // Skip spaces
+      if (letter === " ") return; // Skip spaces
 
       setTimeout(() => {
-        const textElement = document.createElement("div")
-        textElement.innerHTML = letter
-        textElement.style.position = "fixed"
-        textElement.style.left = Math.random() * (window.innerWidth - 100) + "px"
-        textElement.style.top = "-80px"
-        textElement.style.fontSize = "3rem"
-        textElement.style.fontWeight = "bold"
-        textElement.style.color = `hsl(${Math.random() * 360}, 70%, 60%)`
-        textElement.style.pointerEvents = "none"
-        textElement.style.zIndex = "1001"
-        textElement.style.transition = `all ${4 + Math.random() * 2}s ease-out`
-        textElement.style.textShadow = "2px 2px 4px rgba(0,0,0,0.3)"
+        const textElement = document.createElement("div");
+        textElement.innerHTML = letter;
+        textElement.style.position = "fixed";
+        textElement.style.left =
+          Math.random() * (window.innerWidth - 100) + "px";
+        textElement.style.top = "-80px";
+        textElement.style.fontSize = "3rem";
+        textElement.style.fontWeight = "bold";
+        textElement.style.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        textElement.style.pointerEvents = "none";
+        textElement.style.zIndex = "1001";
+        textElement.style.transition = `all ${4 + Math.random() * 2}s ease-out`;
+        textElement.style.textShadow = "2px 2px 4px rgba(0,0,0,0.3)";
 
-        document.body.appendChild(textElement)
-
-        setTimeout(() => {
-          textElement.style.top = window.innerHeight + 100 + "px"
-          textElement.style.transform = `rotate(${Math.random() * 180 - 90}deg)`
-        }, 200)
+        document.body.appendChild(textElement);
 
         setTimeout(() => {
-          document.body.removeChild(textElement)
-        }, 6500)
-      }, index * 200) // Stagger the letters with 200ms delay between each
-    })
-  }
+          textElement.style.top = window.innerHeight + 100 + "px";
+          textElement.style.transform = `rotate(${
+            Math.random() * 180 - 90
+          }deg)`;
+        }, 200);
+
+        setTimeout(() => {
+          document.body.removeChild(textElement);
+        }, 6500);
+      }, index * 200); // Stagger the letters with 200ms delay between each
+    });
+  };
 
   const toggleMusic = () => {
     if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current.pause()
+        audioRef.current.pause();
       } else {
-        audioRef.current.play()
+        audioRef.current.play();
       }
-      setIsPlaying(!isPlaying)
+      setIsPlaying(!isPlaying);
     }
-  }
+  };
 
   const handleGiftRevealed = (index: number) => {
-    setGifts((prev) => prev.map((gift, i) => (i === index ? { ...gift, revealed: true } : gift)))
-  }
+    setGifts((prev) =>
+      prev.map((gift, i) => (i === index ? { ...gift, revealed: true } : gift))
+    );
+  };
 
   const handleCandlesBlown = () => {
     // Create special effect
-    createBirthdayConfetti()
-  }
+    createBirthdayConfetti();
+  };
 
   const createBirthdayConfetti = () => {
-    const confetti = ["🎊", "🎉", "✨", "🌟", "💖", "🎈", "🎂"]
+    const confetti = ["🎊", "🎉", "✨", "🌟", "💖", "🎈", "🎂"];
 
     for (let i = 0; i < 100; i++) {
-      const piece = document.createElement("div")
-      piece.innerHTML = confetti[Math.floor(Math.random() * confetti.length)]
-      piece.style.position = "fixed"
-      piece.style.left = Math.random() * window.innerWidth + "px"
-      piece.style.top = "-50px"
-      piece.style.fontSize = "1.5rem"
-      piece.style.pointerEvents = "none"
-      piece.style.zIndex = "1000"
-      piece.style.transition = "all 5s ease-out"
+      const piece = document.createElement("div");
+      piece.innerHTML = confetti[Math.floor(Math.random() * confetti.length)];
+      piece.style.position = "fixed";
+      piece.style.left = Math.random() * window.innerWidth + "px";
+      piece.style.top = "-50px";
+      piece.style.fontSize = "1.5rem";
+      piece.style.pointerEvents = "none";
+      piece.style.zIndex = "1000";
+      piece.style.transition = "all 5s ease-out";
 
-      document.body.appendChild(piece)
-
-      setTimeout(() => {
-        piece.style.top = window.innerHeight + "px"
-        piece.style.transform = `rotate(${Math.random() * 720}deg)`
-      }, 100)
+      document.body.appendChild(piece);
 
       setTimeout(() => {
-        document.body.removeChild(piece)
-      }, 5000)
+        piece.style.top = window.innerHeight + "px";
+        piece.style.transform = `rotate(${Math.random() * 720}deg)`;
+      }, 100);
+
+      setTimeout(() => {
+        document.body.removeChild(piece);
+      }, 5000);
     }
+  };
+
+  if (!hasStarted) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Button
+          onClick={startExperience}
+          className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+        >
+          Happy Birthday Nanu 😘😘😘😗💞! Click to Start 🎉🎉🎉
+        </Button>
+      </div>
+    );
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${config.settings.backgroundColor} relative overflow-hidden`}>
+    <div
+      className={`min-h-screen bg-gradient-to-br ${config.settings.backgroundColor} relative overflow-hidden`}
+    >
       {/* Background Canvas */}
       <canvas
         ref={canvasRef}
@@ -352,8 +410,17 @@ export default function BirthdayCelebration() {
       {/* Control Buttons */}
       <div className="fixed top-4 right-4 z-40 flex gap-2">
         {config.settings.enableMusic && (
-          <Button onClick={toggleMusic} variant="outline" size="icon" className="bg-white/80 hover:bg-white/90">
-            {isPlaying ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          <Button
+            onClick={toggleMusic}
+            variant="outline"
+            size="icon"
+            className="bg-white/80 hover:bg-white/90"
+          >
+            {!isPlaying ? (
+              <VolumeX className="h-4 w-4" />
+            ) : (
+              <Volume2 className="h-4 w-4" />
+            )}
           </Button>
         )}
       </div>
@@ -363,7 +430,9 @@ export default function BirthdayCelebration() {
         {/* Title Phase */}
         {currentPhase === 0 && (
           <div className="text-center animate-pulse space-y-8">
-            <h1 className={`text-2xl md:text-4xl font-bold ${config.settings.textColor} mb-8 animate-bounce`}>
+            <h1
+              className={`text-2xl md:text-4xl font-bold ${config.settings.textColor} mb-8 animate-bounce`}
+            >
               {config.phases[0].title}
             </h1>
             <div className="text-6xl animate-spin-slow">🎂</div>
@@ -387,10 +456,14 @@ export default function BirthdayCelebration() {
             </h2>
 
             {/* Show Birthday Cake */}
-            {config.phases[currentPhase].showCake && <BirthdayCake onCandlesBlown={handleCandlesBlown} />}
+            {config.phases[currentPhase].showCake && (
+              <BirthdayCake onCandlesBlown={handleCandlesBlown} />
+            )}
 
             {/* Show Gifts */}
-            {config.phases[currentPhase].showGifts && <GiftReveal gifts={gifts} onGiftRevealed={handleGiftRevealed} />}
+            {config.phases[currentPhase].showGifts && (
+              <GiftReveal gifts={gifts} onGiftRevealed={handleGiftRevealed} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+            )}
 
             {/* Next Phase Button */}
             <div className="mt-8">
@@ -425,7 +498,10 @@ export default function BirthdayCelebration() {
                   </Button>
                 </div>
 
-                <div className="relative group cursor-pointer" onClick={handleCelebrationClick}>
+                <div
+                  className="relative group cursor-pointer"
+                  onClick={handleCelebrationClick}
+                >
                   <img
                     src={
                       currentGif ||
@@ -445,9 +521,15 @@ export default function BirthdayCelebration() {
                 </div>
 
                 <div className="text-center space-y-4">
-                  <p className="text-purple-600 font-medium">Click for birthday surprises! 🎁</p>
-                  <p className="text-sm text-gray-600">Birthday celebrations: {clickCount} times 🎂</p>
-                  <p className="text-lg text-purple-700 font-semibold mt-4">{config.personalMessage}</p>
+                  <p className="text-purple-600 font-medium">
+                    Click for birthday surprises! 🎁
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Birthday celebrations: {clickCount} times 🎂
+                  </p>
+                  <p className="text-lg text-purple-700 font-semibold mt-4">
+                    {config.personalMessage}
+                  </p>
 
                   {/* Birthday Wishes */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
@@ -456,18 +538,24 @@ export default function BirthdayCelebration() {
                         key={index}
                         className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg border border-purple-200"
                       >
-                        <p className="text-purple-700 text-sm font-medium">{wish}</p>
+                        <p className="text-purple-700 text-sm font-medium">
+                          {wish}
+                        </p>
                       </div>
                     ))}
                   </div>
 
                   {/* Final Message */}
                   <div className="mt-8 p-6 bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl border-2 border-purple-200">
-                    <h3 className="text-xl font-bold text-purple-800 mb-3">🎂 Happy Birthday, Beautiful! 🎂</h3>
+                    <h3 className="text-xl font-bold text-purple-800 mb-3">
+                      🎂 Happy Birthday, Beautiful! 🎂
+                    </h3>
                     <p className="text-purple-700 leading-relaxed">
-                      Today we celebrate you - your kindness, your smile, your amazing heart, and all the joy you bring
-                      into this world. I'm so grateful to have you in my life, and I can't wait to create more beautiful
-                      memories together. Here's to another year of adventures, laughter, and endless love! 💖
+                      Today we celebrate you - your kindness, your smile, your
+                      amazing heart, and all the joy you bring into this world.
+                      I'm so grateful to have you in my life, and I can't wait
+                      to create more beautiful memories together. Here's to
+                      another year of adventures, laughter, and endless love! 💖
                     </p>
                   </div>
                 </div>
@@ -479,35 +567,48 @@ export default function BirthdayCelebration() {
 
       {/* Hidden Audio Element */}
       {config.settings.enableMusic && (
-        <audio ref={audioRef} loop preload="none">
-          <source src="/placeholder.mp3?query=happy birthday song romantic" type="audio/mpeg" />
+        <audio ref={audioRef} loop preload="auto" autoPlay>
+          <source
+            src="/song.mp3?query=happy birthday song romantic"
+            type="audio/mpeg"
+          />
         </audio>
       )}
 
       {/* Custom Styles */}
       <style jsx>{`
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        
+
         @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
         }
-        
+
         .animate-fadeIn {
           animation: fadeIn 1s ease-out;
         }
-        
+
         .animate-spin-slow {
           animation: spin-slow 3s linear infinite;
         }
-        
+
         .hover\\:shadow-3xl:hover {
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
       `}</style>
     </div>
-  )
+  );
 }
