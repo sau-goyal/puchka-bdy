@@ -23,7 +23,7 @@ interface GiftRevealProps {
 export function GiftReveal({ gifts, onGiftRevealed, audioRef, isPlaying, setIsPlaying }: GiftRevealProps) {
   const [selectedGift, setSelectedGift] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
-  const [modalImageSrc, setModalImageSrc] = useState("")
+  const [, setModalImageSrc] = useState("")
   const [playingVoice, setPlayingVoice] = useState<number | null>(null)
   const [audioElements, setAudioElements] = useState<{ [key: number]: HTMLAudioElement }>({})
 
@@ -46,44 +46,56 @@ export function GiftReveal({ gifts, onGiftRevealed, audioRef, isPlaying, setIsPl
   }
 
   const playVoiceNote = (index: number, voiceNoteSrc: string) => {
-    // Stop any currently playing audio
-    if (isPlaying) {
-      audioRef.current?.pause()
-      setIsPlaying(false)
-    }else {
-      audioRef.current?.play() 
-      setIsPlaying(true)
-    }
-    if (playingVoice !== null && audioElements[playingVoice]) {
-      audioElements[playingVoice].pause()
-      audioElements[playingVoice].currentTime = 0
-    }
-
-    if (playingVoice === index) {
-      // If clicking the same voice note, stop it
-      setPlayingVoice(null)
-      return
-    }
-
-    // Create new audio element if it doesn't exist
-    if (!audioElements[index]) {
-      const audio = new Audio(voiceNoteSrc)
-      audio.addEventListener("ended", () => {
-        setPlayingVoice(null)
-      })
-      setAudioElements((prev) => ({ ...prev, [index]: audio }))
-      audio.play()
-    } else {
-      // Play existing audio
-      
-      audioElements[index].play()
-    }
-
-    setPlayingVoice(index)
-
-    // Create voice note effect
-    createVoiceNoteEffect()
+  // Stop any currently playing voice note
+  if (playingVoice !== null && audioElements[playingVoice]) {
+    audioElements[playingVoice].pause()
+    audioElements[playingVoice].currentTime = 0
   }
+
+  // If clicking the same note, stop it
+  if (playingVoice === index) {
+    setPlayingVoice(null)
+    setIsPlaying(false)
+
+    // 🔥 Resume main song when voice note stops
+    if (audioRef.current) {
+      audioRef.current.play()
+    }
+    return
+  }
+
+  let audio = audioElements[index]
+
+  // Create audio element if not already cached
+  if (!audio) {
+    audio = new Audio(voiceNoteSrc)
+
+    audio.addEventListener("ended", () => {
+      setPlayingVoice(null)
+      setIsPlaying(false)
+
+      // 🔥 Resume main song when voice note ends
+      if (audioRef.current) {
+        audioRef.current.play()
+      }
+    })
+
+    setAudioElements((prev) => ({ ...prev, [index]: audio }))
+  }
+
+  // 🔥 Pause main song when a voice note starts
+  if (audioRef.current) {
+    audioRef.current.pause()
+  }
+
+  // Play the voice note
+  audio.play()
+  setPlayingVoice(index)
+  setIsPlaying(true)
+
+  createVoiceNoteEffect()
+}
+
 
   const createVoiceNoteEffect = () => {
     const soundWaves = ["🎵", "🎶", "🎼", "🎤", "💕", "💖"]
@@ -228,8 +240,8 @@ export function GiftReveal({ gifts, onGiftRevealed, audioRef, isPlaying, setIsPl
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={closeModal}>
-          <div className="relative max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 bg-black/70 z-70 flex items-center justify-center h-full w-full p-4" onClick={closeModal}>
+          <div className="relative max-w-4xl h-full bg-white rounded-2xl shadow-2xl overflow-hidden">
             <Button
               onClick={closeModal}
               className="absolute top-4 right-4 z-10 bg-white/80 hover:bg-white/90 text-gray-800 rounded-full p-2"
@@ -237,20 +249,30 @@ export function GiftReveal({ gifts, onGiftRevealed, audioRef, isPlaying, setIsPl
             >
               <X className="h-4 w-4" />
             </Button>
-            <img
-              src={modalImageSrc || "/placeholder.svg"}
-              alt="Love Letter"
-              className="w-full h-full object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
+            <div className="w-full h-[70vh] flex flex-col items-center justify-start bg-gray-100 overflow-y-auto">
+  <img
+    src={"/tuku1.jpg"}
+    alt="Love Letter"
+    className="w-full max-h-[80vh] object-contain mb-4"
+    onClick={(e) => e.stopPropagation()}
+  />
+  <img
+    src={"/tuku2.jpg"}
+    alt="Love Letter"
+    className="w-full max-h-[80vh] object-contain"
+    onClick={(e) => e.stopPropagation()}
+  />
+</div>
+
+            
+          </div>
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-              <h3 className="text-white text-xl font-bold mb-2">💌 My Love Letter to You 💌</h3>
+              <h3 className="text-white/90 text-xl font-bold mb-2">💌 My Love Letter to You 💌</h3>
               <p className="text-white/90 text-sm">
                 Every word written with love, every line filled with my heart. You are my everything, today and always.
                 💖
               </p>
             </div>
-          </div>
         </div>
       )}
     </>
