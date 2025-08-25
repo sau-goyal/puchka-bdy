@@ -25,14 +25,14 @@ export default function BirthdayCelebration() {
       name: "Love Letter",
       description:
         "A heartfelt letter expressing all my love for you 💌 (Click the image to read it!)",
-      image: "/placeholder.svg?height=150&width=150",
+      image: "/love.jpeg?height=150&width=150",
       modalImage: "/placeholder.svg?height=600&width=800",
       revealed: false,
     },
     {
       name: "ab tuki bolega",
       description: "A special voice note just for you! 🎵 (Click to play)",
-      image: "/placeholder.svg?height=150&width=150",
+      image: "/music.gif?height=150&width=150",
       voiceNote: "/tuku.mp3?query=romantic voice message",
       revealed: false,
     },
@@ -43,11 +43,10 @@ export default function BirthdayCelebration() {
 
   const startExperience = () => {
     setHasStarted(true);
-  
-    audioRef.current?.play();
-      
-    // setIsPlaying(!isPlaying);
 
+    audioRef.current?.play();
+
+    // setIsPlaying(!isPlaying);
   };
 
   // Initialize GIF
@@ -363,12 +362,13 @@ export default function BirthdayCelebration() {
 
   if (!hasStarted) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen w-full">
         <Button
           onClick={startExperience}
-          className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+          className="flex flex-col justify-center items-center w-[80%] h-fit bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
         >
-          Happy Birthday Nanu 😘😘😘😗💞! Click to Start 🎉🎉🎉
+          <span>Happy Birthday Nanu 😘😘😘😗💞!</span>
+          <span>Click to Start 🎉🎉🎉</span>
         </Button>
       </div>
     );
@@ -393,7 +393,7 @@ export default function BirthdayCelebration() {
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className={`absolute text-3xl animate-bounce`}
+              className={`absolute text-2xl sm:text-3xl animate-bounce`}
               style={{
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
@@ -408,7 +408,7 @@ export default function BirthdayCelebration() {
       )}
 
       {/* Control Buttons */}
-      <div className="fixed top-4 right-4 z-40 flex gap-2">
+      <div className="fixed top-4 right-4 z-20 flex gap-2">
         {config.settings.enableMusic && (
           <Button
             onClick={toggleMusic}
@@ -426,12 +426,12 @@ export default function BirthdayCelebration() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 py-8">
         {/* Title Phase */}
         {currentPhase === 0 && (
-          <div className="text-center animate-pulse space-y-8">
+          <div className="flex flex-col items-center w-full text-justify px-8 animate-pulse space-y-6 sm:space-y-8">
             <h1
-              className={`text-2xl md:text-4xl font-bold ${config.settings.textColor} mb-8 animate-bounce`}
+              className={`text-wrap text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${config.settings.textColor} mb-6 sm:mb-8 animate-bounce px-4`}
             >
               {config.phases[0].title}
             </h1>
@@ -439,16 +439,21 @@ export default function BirthdayCelebration() {
 
             <Button
               onClick={handleNextPhase}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-xl rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="flex flex-col justify-center items-center w-full h-fit bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-xl rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
             >
-              ruko ruko yha click kro or bhi h abhi to 😏
+              <span>
+                ruko ruko yha click kro
+                </span>
+              <span>
+                or bhi h abhi to 😏
+                </span>
             </Button>
           </div>
         )}
 
         {/* Message Phases */}
         {currentPhase > 0 && currentPhase < config.phases.length - 1 && (
-          <div className="text-center max-w-4xl space-y-8">
+          <div className="text-center w-full space-y-8 px-8">
             <h2
               className={`text-lg md:text-2xl font-semibold ${config.settings.textColor} leading-relaxed animate-fadeIn`}
             >
@@ -462,17 +467,28 @@ export default function BirthdayCelebration() {
 
             {/* Show Gifts */}
             {config.phases[currentPhase].showGifts && (
-              <GiftReveal gifts={gifts} onGiftRevealed={handleGiftRevealed} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+              <GiftReveal
+                gifts={gifts}
+                onGiftRevealed={handleGiftRevealed}
+                audioRef={audioRef}
+                isPlaying={isPlaying}
+                setIsPlaying={setIsPlaying}
+              />
             )}
 
             {/* Next Phase Button */}
             <div className="mt-8">
               <Button
-                onClick={handleNextPhase}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-xl rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              >
-                ruko ruko yha click kro or bhi h abhi to 😏
-              </Button>
+              onClick={handleNextPhase}
+              className="flex flex-col justify-center items-center w-full h-fit bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-xl rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            >
+              <span>
+                ruko ruko yha click kro
+                </span>
+              <span>
+                or bhi h abhi to 😏
+                </span>
+            </Button>
             </div>
           </div>
         )}
@@ -506,12 +522,7 @@ export default function BirthdayCelebration() {
                     src={
                       currentGif ||
                       config.birthdayGifs[0] ||
-                      "/placeholder.svg?height=300&width=400&query=happy birthday celebration" ||
-                      "/placeholder.svg" ||
-                      "/placeholder.svg" ||
-                      "/placeholder.svg" ||
-                      "/placeholder.svg" ||
-                      "/placeholder.svg"
+                      "https://media.tenor.com/l2QU5JIn6q0AAAAj/happy-birthday.gif"
                     }
                     alt="Birthday Celebration"
                     className="w-80 h-64 object-cover rounded-2xl shadow-lg mx-auto group-hover:scale-105 transition-transform duration-300"
@@ -548,7 +559,7 @@ export default function BirthdayCelebration() {
                   {/* Final Message */}
                   <div className="mt-8 p-6 bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl border-2 border-purple-200">
                     <h3 className="text-xl font-bold text-purple-800 mb-3">
-                      🎂 Happy Birthday, Beautiful! 🎂
+                      🎂 Happy Birthday, ! 🎂
                     </h3>
                     <p className="text-purple-700 leading-relaxed">
                       Today we celebrate you - your kindness, your smile, your
