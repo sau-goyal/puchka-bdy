@@ -116,18 +116,19 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
   }
 
   return (
-    <Card className="p-8 bg-white/90 backdrop-blur-sm shadow-2xl border-pink-200">
+    <Card className="p-8 bg-white/90 backdrop-blur-sm shadow-2xl border-pink-200 w-full">
       <div className="text-center space-y-6">
         <h3 className="text-2xl font-bold text-purple-800">🎂 Make a Wish! 🎂</h3>
 
         {/* Cake */}
-        <div className="relative mx-auto w-80 h-60 bg-gradient-to-b from-pink-300 to-pink-400 rounded-lg shadow-lg">
+        <div className="relative mx-auto h-60  rounded-lg">
           {/* Cake layers */}
-          <div className="absolute bottom-0 w-full h-16 bg-gradient-to-b from-yellow-200 to-yellow-300 rounded-b-lg"></div>
-          <div className="absolute bottom-16 w-full h-16 bg-gradient-to-b from-pink-200 to-pink-300 rounded-lg"></div>
+          <img src="https://media.tenor.com/U3xDwv7MYfUAAAAi/birthday-happy-birthday.gif" className="absolute top-0 left-0 w-full h-full object-contain" alt="" />
+          {/* <div className="absolute bottom-0 w-full h-16 bg-gradient-to-b from-yellow-200 to-yellow-300 rounded-b-lg"></div>
+          <div className="absolute bottom-16 w-full h-16 bg-gradient-to-b from-pink-200 to-pink-300 rounded-lg"></div> */}
 
           {/* Heart Candle */}
-          <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
+          <div className="absolute top-18 left-[53%] md:left-[51%] transform -translate-x-1/2">
             <div
               className="relative cursor-pointer transform hover:scale-110 transition-transform"
               onClick={blowHeartCandle}
@@ -144,10 +145,10 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
           </div>
 
           {/* Decorations */}
-          <div className="absolute bottom-20 left-4 text-2xl">🌹</div>
-          <div className="absolute bottom-20 right-4 text-2xl">🌹</div>
-          <div className="absolute bottom-32 left-8 text-xl">💖</div>
-          <div className="absolute bottom-32 right-8 text-xl">💖</div>
+          <div className="absolute bottom-20 left-9 text-2xl">🌹</div>
+          <div className="absolute bottom-20 right-6 text-2xl">🌹</div>
+          <div className="absolute bottom-28 left-14 text-xl">💖</div>
+          <div className="absolute bottom-28 right-12 text-xl">💖</div>
         </div>
 
         <div className="space-y-4">
